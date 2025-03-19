@@ -13,6 +13,7 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@vis.gl/react-google-maps": "^1.5.2",
     "react": "latest",
     "react-dom": "latest"
   },

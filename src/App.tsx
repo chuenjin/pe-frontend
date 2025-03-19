@@ -7,8 +7,8 @@ import MapDisplay from './components/MapDisplay/MapDisplay';
 
 export default function App() {
   return (
-    <Container maxWidth="xl">
-      <Box sx={{ my: 4 }}>
+    <Container maxWidth="xl" sx={{height: '100vh'}}>
+      <Box sx={{ my: 4, height: '100%' }}>
         <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
           Weather Stations
         </Typography>
