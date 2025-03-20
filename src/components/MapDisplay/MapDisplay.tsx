@@ -1,18 +1,18 @@
-import React, {useEffect, useState, useRef, useCallback} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   APIProvider,
   Map,
   AdvancedMarker,
   MapCameraChangedEvent,
-  useMap,
   Pin,
   InfoWindow,
   useAdvancedMarkerRef
 }
 from '@vis.gl/react-google-maps';
 import Typography from '@mui/material/Typography';
-import Box from '@mui/material/Box';
-import { useGetWeatherStations } from "../../hooks/useGetWeatherStations";
+import Grid from '@mui/material/Grid2';
+import useGetWeatherStations from "../../hooks/useGetWeatherStations";
+import POIFilter from "../POIFilter/POIFilter";
 
 const MarkerWithInfoWindow = ({poi}) => {
   // `markerRef` and `marker` are needed to establish the connection between
@@ -42,13 +42,11 @@ const MarkerWithInfoWindow = ({poi}) => {
 	}}
         onClick={handleMarkerClick}
       >
-	<Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} />
+	<Pin background={'#FBBC04'} glyphColor={'#000'} borderColor={'#000'} scale={0.8} />
       </AdvancedMarker>
 
       {infoWindowShown && (
-        <InfoWindow anchor={marker} onClose={handleClose} headerDisabled>
-          <Typography variant="h6" gutterBottom>{poi.name}
-	  </Typography>
+        <InfoWindow anchor={marker} onClose={handleClose} headerContent={<Typography variant="h6">{poi.name}</Typography>}>
           <Typography>Site: {poi.site}</Typography>
 	  <Typography>Portfolio: {poi.portfolio}</Typography>
 	  <Typography>Last Measurement: {poi.measurements[poi.measurements.length - 1].timestamp}</Typography>
@@ -56,29 +54,16 @@ const MarkerWithInfoWindow = ({poi}) => {
 	    <Typography key={datapoint.id}>- {datapoint.variable.long_name}: {datapoint.value} {datapoint.variable.unit}</Typography>
 
 	    ))}
-	    
-	    
-
         </InfoWindow>
       )}
     </>
   );
 };
 
-const PoiMarkers = (props: { pois }) => {
-  const map = useMap();
- 
-
-  const handleClick = useCallback((ev: google.maps.MapMouseEvent) => {
-    if(!map) return;
-    if(!ev.latLng) return;
-    console.log('marker clicked:', ev.latLng.toString());
-    map.panTo(ev.latLng);
-  });
-
+const PoiMarkers = ({ pois }) => {
   return (
     <>
-      {props.pois.map((poi) => (
+      {pois.map((poi) => (
 	<MarkerWithInfoWindow poi={poi} key={poi.id} />
       ))}
     </>
@@ -89,29 +74,46 @@ const PoiMarkers = (props: { pois }) => {
 export default function MapDisplay() {
 
   const { isLoading, error, data } = useGetWeatherStations();
+  const [filteredPOIS, setFilteredPOIS] = useState([]);
 
+  useEffect(() => {
+    if (data && data.length > 0) {
+      setFilteredPOIS(data);
+    }
+  }, [data]);
+
+  const handleFilterChange = (selectedStates) => {
+    if (selectedStates.length === 0) {
+      setFilteredPOIS(data);
+    } else {
+      const filtered = data.filter(poi =>
+	selectedStates.includes(poi.state)
+      );
+      setFilteredPOIS(filtered);
+    }
+  }
+  
   return (
-    <>
       <APIProvider apiKey={import.meta.env.VITE_MAPS_API_KEY} onLoad={() => console.log('Maps API has loaded.')}>
-	<Box
-	  sx={{
-	    width: '100%',
-	    height: '100%',
-
-	  }}
-	>
-	  <Map
-	    style={{width: '100%', height: '100%'}}
-	    defaultZoom={4}
-	    defaultCenter={ { lat: -26.8539498, lng: 133.0460983 } }
-	    mapId='d177017b90527cd4'
-	    onCameraChanged={ (ev: MapCameraChangedEvent) =>
-              console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
-	    }>
-		(!isLoading && !error && <PoiMarkers pois={data} />)
-	  </Map>
-	</Box>
+	<Grid container spacing={2} sx={{height: '90%'}}>
+	  <Grid size={2}>
+	    <POIFilter
+	      pois={data}
+	      onFilterChange={handleFilterChange}
+	    />
+	  </Grid>
+	  <Grid size="grow">
+	    <Map
+	      defaultZoom={5}
+	      defaultCenter={ { lat: -30.2946953, lng: 145.7221977 } }
+	      mapId='d177017b90527cd4'
+	      onCameraChanged={ (ev: MapCameraChangedEvent) =>
+		console.log('camera changed:', ev.detail.center, 'zoom:', ev.detail.zoom)
+	      }>
+	      {!isLoading && !error && <PoiMarkers pois={filteredPOIS} />}
+	    </Map>
+	  </Grid>
+	</Grid>
       </APIProvider>
-    </>
   );
 }

@@ -11,8 +11,7 @@ const queryClient = new QueryClient()
 export default function App() {
   return (
     <QueryClientProvider client={queryClient}>
-      <Container maxWidth="xl" sx={{height: '100vh'}}>
-	<Box sx={{ my: 4, height: '100%' }}>
+      <Container maxWidth="xl" sx={{height: '100vh', pt: 2}}>
           <Typography
 	    variant="h4"
 	    component="h1"
@@ -21,7 +20,6 @@ export default function App() {
 	     Weather Stations
           </Typography>
 	  <MapDisplay />
-	</Box>
       </Container>
     </QueryClientProvider>
   );

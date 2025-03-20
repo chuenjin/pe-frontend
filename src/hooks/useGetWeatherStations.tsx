@@ -13,3 +13,5 @@ export const useGetWeatherStations = () => {
 
   return { isLoading, error, data };
 };
+
+export default useGetWeatherStations;
