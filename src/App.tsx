@@ -1,19 +1,28 @@
-import * as React from 'react';
+import React from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import Container from '@mui/material/Container';
 import Typography from '@mui/material/Typography';
 import Box from '@mui/material/Box';
-import Link from '@mui/material/Link';
+
 import MapDisplay from './components/MapDisplay/MapDisplay';
+
+const queryClient = new QueryClient()
 
 export default function App() {
   return (
-    <Container maxWidth="xl" sx={{height: '100vh'}}>
-      <Box sx={{ my: 4, height: '100%' }}>
-        <Typography variant="h4" component="h1" sx={{ mb: 2 }}>
-          Weather Stations
-        </Typography>
-	<MapDisplay />
-      </Box>
-    </Container>
+    <QueryClientProvider client={queryClient}>
+      <Container maxWidth="xl" sx={{height: '100vh'}}>
+	<Box sx={{ my: 4, height: '100%' }}>
+          <Typography
+	    variant="h4"
+	    component="h1"
+	    sx={{ mb: 2 }}
+	  >
+	     Weather Stations
+          </Typography>
+	  <MapDisplay />
+	</Box>
+      </Container>
+    </QueryClientProvider>
   );
 }

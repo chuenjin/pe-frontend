@@ -13,7 +13,9 @@
     "@emotion/styled": "latest",
     "@mui/icons-material": "latest",
     "@mui/material": "latest",
+    "@tanstack/react-query": "^4.36.1",
     "@vis.gl/react-google-maps": "^1.5.2",
+    "axios": "^1.8.4",
     "react": "latest",
     "react-dom": "latest"
   },
