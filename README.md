@@ -1,11 +1,11 @@
 Frontend
 
-Setup and run api
-cd frontend
+Setup and run api  
+cd frontend  
 npm install
 
-create .env.local and add the following env vars:
-VITE_MAPS_API_KEY=<YOUR API KEY>
+create .env.local and add the following env vars:  
+VITE_MAPS_API_KEY=<YOUR API KEY>  
 VITE_MAPS_API_ADDRESS=http://localhost:8000
 
 npm run dev
